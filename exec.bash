@@ -1,3 +1,4 @@
+### Script principal que lanzará todos los procesos y configuraciones necesarias para el correcto funcionamiento de la herramienta ###
 #! /bin/bash
 
 if [ $# -lt 1 ]
@@ -14,6 +15,7 @@ BSSIDs=()
 PSKs=()
 contador=0
 current_mac=$(ip a | grep -i $interfaz -A 1 | grep "link" | awk '{print $2}')
+sub_mac="${current_mac:0:14}"
 
 while IFS= read -r red; do
     SSID=$(echo "$red" | grep -o '\bSSID: [^,]*' | cut -d ' ' -f 2-)
@@ -22,7 +24,8 @@ while IFS= read -r red; do
 
     if [ "$BSSID" = "no_stored" ]
     then
-        BSSID=$current_mac
+        #De esta forma es posible relacionar unequivocamente cada mac con un ssid específico
+        BSSID=$(printf "%s:%02x" "$sub_mac" $contador)
     fi
 
     # Almacenar datos en los arrays
@@ -33,35 +36,20 @@ while IFS= read -r red; do
 done <<< "$redes_disponibles"
 
 #Pasamos a modo monitor
-sudo nmcli device set $interfaz managed no
+nmcli device set $interfaz managed no
 ip link set $interfaz down
 iwconfig $interfaz mode monitor
 ip link set $interfaz up
 
-#Lanzamos proceso de escucha para almacenar los SSIDs que han recibido probe request
-python3 get_requests.py "$interfaz" "${SSIDs[@]}" > responses.log 2>&1 &
+#Inicializamos archivo de log y recopilacion
+rm responses.log 2>/dev/null
+rm results.txt 2>/dev/null
 
-#Almacenamos el pid de la llamada anterior pero luego hacer un kill
-pid_get_requests=$!
-
-#Lanzamos los beacon supantando a cada red guardada
-for ((i = 0; i < $contador; i++)); do
-
-#Iniciamos la inyección de beacon frames
-echo "Trying ${SSIDs[$i]} with MAC ${BSSIDs[$i]}"
-python3 beacon_scapy.py $interfaz ${BSSIDs[$i]} "${SSIDs[$i]}"
-
-done
+#Lanzamos main.py para comenzar el proceso de captura/inyeccion de paquetes
+python3 main.py $interfaz "${SSIDs[@]}" "${BSSIDs[@]}"
 
 #Hacemos una pausa por si queda alguna trama aún por recivir
 sleep 1
-
-kill -SIGTERM $pid_get_requests
-
-# Con kill -0 comprobamos que o proceso exista. Non fai nada excepto devolver éxito se existe e fracaso se xa non existe
-while kill -0 $pid_get_requests 2>/dev/null; do
-    sleep 1
-done
 
 bash restore.bash $interfaz
 
@@ -69,7 +57,6 @@ bash restore.bash $interfaz
 sort responses.log | uniq > results.txt
 
 echo "SSIDs search process finishid, you can see all coincidences in results.txt file. Also you can see all responses in responses.log file"
-
 
 read -p "Choose SSID to spoof: " spoofSSID
 

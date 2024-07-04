@@ -9,11 +9,12 @@ config = configparser.ConfigParser()
 networks = {}
 
 for filename in os.listdir(wifis_path):
-    if filename.endswith('.nmconnection') and not filename.startswith('Hotspot'):
+    if filename.endswith('.nmconnection'):
         file_path = os.path.join(wifis_path, filename)
         config = configparser.ConfigParser()
         config.read(file_path)
 
+    if config.has_section('wifi') and config.get('wifi', 'mode', fallback='') == 'infrastructure':
         ssid = config.get('wifi', 'ssid', fallback=False)
         psk = config.get('wifi-security', 'psk', fallback=False)
 
