@@ -3,7 +3,8 @@
 
 if [ $# -lt 1 ]
 then
-    echo "The number of arguments is invalid, the interface name is required. The available ones are: "
+    echo "The number of arguments is invalid. You need to specify two Interface names, one for AP and other connected to internet."
+    echo "The following are available WIFI interfaces. Be sure you choose one that supports monitor mode."
     iw dev | grep Interface | awk '{print $2}'
     exit 1
 fi
