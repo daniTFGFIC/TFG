@@ -1,6 +1,6 @@
 from multiprocessing import Process, Manager, Event
 from scapy.layers.dot11 import RadioTap, Dot11,  Dot11Beacon, sendp
-import probe_listener as pl
+import listener as ltnr
 import packet_definition as pd
 import time
 import sys
@@ -28,7 +28,7 @@ def main():
         shared_data['macs'] = macs
 
         # Inicia el proceso de escucha de probe requests
-        listen_process = Process(target=pl.listen_for_requests, args=(shared_data, interface, stop_event))
+        listen_process = Process(target=ltnr.listen_for_requests, args=(shared_data, interface, stop_event))
         listen_process.start()
 
         # Proceso de envío de beacons dentro del bucle
@@ -43,7 +43,7 @@ def main():
             beacon = Dot11Beacon(cap=caps)
             frame = RadioTap()/dot11/beacon/dot_ssid/dot_rates/dot_channel/dot_erp/dot_rsn
 
-            sendp(frame, iface=interface, count=250, inter=0.1, verbose=False)
+            sendp(frame, iface=interface, count=300, inter=0.1, verbose=False)
             time.sleep(2)  # Espera antes de cambiar al siguiente SSID/MAC
 
         stop_event.set()
