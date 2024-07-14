@@ -17,13 +17,13 @@ Arquivo que xera o entorno necesario, é o único que non precisa ser executado 
 É o arquivo principal, ao executalo irao guiando e solicitando parámetros segundo sexa necesario.
 
 ### start_services.bash
-Este arquivo xera o AP ca configuración da última execución realizada.
+Levanta un AP. Se se executa manualmente, o AP terá a configuración da última execución.
 
 ### stop_services.bash
 Detén o AP e elimina as configuración precisas, como por exemplo as entradas creadas con iptables.
 
 ### main.py
-Arquivo principal de python encargado de orquestrar os procesos de envío e captura de tramas para atopar coincidencias cos dispositivos cercanos nos SSIDs alamceados.
+Arquivo principal de python encargado de orquestrar os procesos de envío e captura de tramas para atopar coincidencias cos dispositivos cercanos nos SSIDs almaceados.
 
 ### listener.py, extract_info.py e packet_definition.py
 Son arquivos aos que chama "main.py", non se poden executar por separado.
