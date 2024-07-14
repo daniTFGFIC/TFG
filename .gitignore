@@ -1,5 +1,5 @@
 *.log
-*.txt
+results.txt
 *.save
 __pycache__
 caps

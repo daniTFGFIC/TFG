@@ -1,0 +1,24 @@
+interface=XXXXXX
+driver=nl80211
+ieee80211n=1
+ssid=XXXXXX
+hw_mode=g
+channel=1
+macaddr_acl=0
+auth_algs=1
+
+##WPA2/3 comun
+wpa=2
+rsn_pairwise=CCMP
+wpa_passphrase=XXXXXX
+
+#WPA2 configuracion
+wpa_key_mgmt=WPA-PSK
+
+##WPA3 configuracion
+#wpa_key_mgmt=SAE
+
+ignore_broadcast_ssid=0
+
+##BSSIDS
+bssid=XXXXXX
