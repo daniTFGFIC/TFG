@@ -17,7 +17,7 @@ def handle_packet(packet, shared_data, interface):
     if packet.haslayer(Dot11ProbeReq):
         ssid = shared_data['ssid']
         mac = shared_data['mac']
-        ssid_packet = packet.info.decode() if packet.info else None
+        #ssid_packet = packet.info.decode() if packet.info else None
         client_mac = packet.addr2.lower()
         ap_mac = packet.addr1.lower()
 
@@ -29,11 +29,11 @@ def handle_packet(packet, shared_data, interface):
             frame = RadioTap()/dot11/beacon/dot_ssid/dot_rates/dot_channel/dot_erp/dot_rsn
 
             Process(target=send_response, args=(frame, interface)).start()
-            #with open("responses.log", 'a') as file:
-                #file.write(f"{time} - Enviada Respuesta a peticion WILDCARD. Paquete: Probe Response -- Desde: {mac} -- Destino: {client_mac} -- SSID: {ssid}\n")
-        elif ssid_packet in ssids:
-            with open("responses.log", 'a') as file:
-                file.write(f"Paquete: Probe Request -- Desde: {client_mac} -- Destino: {ap_mac} -- SSID: {ssid_packet}\n")
+        else:
+            ssid_packet = packet.info.decode()
+            if ssid_packet in ssids:
+                with open("responses.log", 'a') as file:
+                    file.write(f"Paquete: Probe Request -- Desde: {client_mac} -- Destino: {ap_mac} -- SSID: {ssid_packet}\n")
 
     elif packet.haslayer(Dot11Auth) and packet[Dot11Auth].seqnum == 1: #Authentication del cliente en respuesta al probe response
         client_mac = packet.addr2.lower()

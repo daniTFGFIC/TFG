@@ -3,15 +3,15 @@
 Respositorio con el código desarrollado para el TFG.
 
 ## Notas:
-- Antes de comezar execute "entorno.bash" para instalar o entorno necesario. Non execute este arquivo con sudo.
+- Requeriranse permisos de root, polo que deberá usar sudo en **TODAS** as execucións.
+- Antes de comezar execute "entorno.bash" para instalar o entorno necesario.
 - Se xa ten instalado hostapd cree unha copia de respaldo dos arquivos de configuración se non os quere perder.
 - Para isc-dhcp-server engadiranse os parámetros de confguración ao final do arquivo polo que non se sobreescribirá o orixinal.
-- Requeriranse permisos de root, polo que deberá usar sudo en todas as execucións a excepción de "entorno.bash".
 - Aínda que pode executar os diferentes códigos por separado, o entorno está deseñado para executar todo a través de "exec.bash"
 
 ## Modo de emprego:
 ### entorno.bash
-Arquivo que xera o entorno necesario, é o único que non precisa ser executado con sudo.
+Arquivo que instala os servizos e scapy. Realiza tamén certas configuracións previas.
 
 ### exec.bash
 É o arquivo principal, ao executalo irao guiando e solicitando parámetros segundo sexa necesario.

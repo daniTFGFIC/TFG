@@ -1,11 +1,12 @@
 #! /bin/bash
 
 #Instalacion
-sudo apt-get update
-sudo apt-get -y install isc-dhcp-server hostapd
-pip3 install --user scapy
+apt-get update
+apt-get -y install isc-dhcp-server hostapd
+pip3 install scapy
 
 #Modificacions
-sudo systemctl unmask hostapd
-sudo systemctl disable hostapd
-sudo systemctl disable isc-dhcp-server
+systemctl unmask hostapd
+systemctl disable hostapd
+systemctl disable isc-dhcp-server
+cat "isc_conf.txt" >> "/etc/dhcp/dhcpd.conf"
