@@ -17,7 +17,6 @@ def handle_packet(packet, shared_data, interface):
     if packet.haslayer(Dot11ProbeReq):
         ssid = shared_data['ssid']
         mac = shared_data['mac']
-        #ssid_packet = packet.info.decode() if packet.info else None
         client_mac = packet.addr2.lower()
         ap_mac = packet.addr1.lower()
 
@@ -33,15 +32,15 @@ def handle_packet(packet, shared_data, interface):
             ssid_packet = packet.info.decode()
             if ssid_packet in ssids:
                 with open("responses.log", 'a') as file:
-                    file.write(f"Paquete: Probe Request -- Desde: {client_mac} -- Destino: {ap_mac} -- SSID: {ssid_packet}\n")
+                    file.write(f"Packet: Probe Request -- From: {client_mac} -- To: {ap_mac} -- SSID: {ssid_packet}\n")
 
-    elif packet.haslayer(Dot11Auth) and packet[Dot11Auth].seqnum == 1: #Authentication del cliente en respuesta al probe response
+    elif packet.haslayer(Dot11Auth) and packet[Dot11Auth].seqnum == 1: #client Authentication in response to the probe response.
         client_mac = packet.addr2.lower()
         ap_mac = packet.addr1.lower()
         if ap_mac in macs:
             ssid_packet = ssids[macs.index(ap_mac)]
             with open("responses.log", 'a') as file:
-                file.write(f"Paquete: Authentication -- Desde: {client_mac} -- Destino {ap_mac} -- SSID: {ssid_packet}\n")
+                file.write(f"Packet: Authentication -- From: {client_mac} -- To {ap_mac} -- SSID: {ssid_packet}\n")
 
 def listen_for_requests(shared_data, interface, stop_event):
     def stop_sniffing(packet):

@@ -10,7 +10,7 @@ def main():
     argc = len(sys.argv)
     punto_corte = argc//2+1
 
-    #Lista de SSIDS y MACS
+    # SSIDS and MACS list
     ssids = sys.argv[2:punto_corte]
     macs = sys.argv[punto_corte:]
 
@@ -27,11 +27,11 @@ def main():
         shared_data['ssids'] = ssids
         shared_data['macs'] = macs
 
-        # Inicia el proceso de escucha de probe requests
+        # The probe request listening process is started.
         listen_process = Process(target=ltnr.listen_for_requests, args=(shared_data, interface, stop_event))
         listen_process.start()
 
-        # Proceso de envío de beacons dentro del bucle
+        # The beacon sending process is initiated within the loop.
         for ssid, mac in zip(ssids, macs):
             shared_data['ssid'] = ssid
             shared_data['mac'] = mac
@@ -44,7 +44,7 @@ def main():
             frame = RadioTap()/dot11/beacon/dot_ssid/dot_rates/dot_channel/dot_erp/dot_rsn
 
             sendp(frame, iface=interface, count=300, inter=0.1, verbose=False)
-            time.sleep(2)  # Espera antes de cambiar al siguiente SSID/MAC
+            time.sleep(2)  # Waits before switching to the next SSID/MAC.
 
         stop_event.set()
         listen_process.join()

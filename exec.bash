@@ -1,4 +1,4 @@
-### Script principal que lanzará todos los procesos y configuraciones necesarias para el correcto funcionamiento de la herramienta ###
+### Main script that will launch all the necessary processes and configurations for the correct functioning of the tool ###
 #! /bin/bash
 
 if [ $# -lt 2 ]
@@ -30,11 +30,11 @@ while IFS= read -r red; do
 
     if [ "$BSSID" = "no_stored" ]
     then
-        #De esta forma es posible relacionar unequivocamente cada mac con un ssid específico
+        # This way, it is possible to unambiguously associate each MAC address with a specific SSID
         BSSID=$(printf "%s:%02x" "$sub_mac" $contador)
     fi
 
-    # Almacenar datos en los arrays
+    # Store data in arrays.
     SSIDs+=("$SSID")
     BSSIDs+=("$BSSID")
     PSKs+=("$PSK")
@@ -50,23 +50,23 @@ while true; do
 
     case $opcion in
         [Yy]* )
-            #Pasamos a modo monitor
+            # Switching to monitor mode.
             nmcli device set $interfaz managed no
             ip link set $interfaz down
             iwconfig $interfaz mode monitor
             ip link set $interfaz up
 
-            #Inicializamos archivo de log y recopilacion
+            # The log file and data collection are initialized.
             rm responses.log 2>/dev/null
             rm results.txt 2>/dev/null
 
-            #Lanzamos main.py para comenzar el proceso de captura/inyeccion de paquetes
+            # main.py is executed to start the packet capture/injection process
             python3 main.py $interfaz "${SSIDs[@]}" "${BSSIDs[@]}"
 
-            #Gardamos só as entradas únicas
+            # Only unique entries are saved.
             sort responses.log | uniq > results.txt
 
-            #Deshacemos el cambio de modo monitor
+            # Disabling monitor mode
             ip link set $interfaz down
             iwconfig $interfaz mode manage
             nmcli device set $interfaz managed yes
@@ -103,7 +103,7 @@ then
     exit
 fi
 
-#Configuracion de hostapd
+# Hostapd configuration
 cp "hostapd_conf.txt" "$hostapd_conf_file"
 
 sed -i "s/^interface=XXXXXX/interface=$1/" "$hostapd_conf_file"
@@ -111,16 +111,16 @@ sed -i "s/^ssid=XXXXXX/ssid=${SSIDs[$N_SSID_elegido]}/" "$hostapd_conf_file"
 sed -i "s/^wpa_passphrase=XXXXXX/wpa_passphrase=${PSKs[$N_SSID_elegido]}/" "$hostapd_conf_file"
 sed -i "s/^bssid=XXXXXX/bssid=${BSSIDs[$N_SSID_elegido]}/" "$hostapd_conf_file"
 
-#Levantamiento del AP
+# The AP is initialized
 bash start_services.bash $1 $2
 
 echo "Fake AP created and runnning."
 
 read -p "Press any key to stop the AP and revert changes."
 
-bash stop_services.bash
+bash stop_services.bash $1 $2
 
 echo "Process finished."
 
-## FIN ##
+## END ##
 

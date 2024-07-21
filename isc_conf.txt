@@ -10,4 +10,7 @@ subnet 192.168.101.0 netmask 255.255.255.0 {
 }
 
 
-## FIN CONFIGURACION
+## FIN CONFIGURACION ##
+
+## Note:
+## This configuration must be manually modified by editing the following file: /etc/dhcp/dhcpd.conf

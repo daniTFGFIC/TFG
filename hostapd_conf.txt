@@ -2,23 +2,21 @@ interface=XXXXXX
 driver=nl80211
 ieee80211n=1
 ssid=XXXXXX
+bssid=XXXXXX
 hw_mode=g
 channel=1
-macaddr_acl=0
 auth_algs=1
 
-##WPA2/3 comun
+##WPA2/3 common configuration
 wpa=2
 rsn_pairwise=CCMP
 wpa_passphrase=XXXXXX
 
-#WPA2 configuracion
+##WPA2 configuration
 wpa_key_mgmt=WPA-PSK
 
-##WPA3 configuracion
+##WPA3 configuration
 #wpa_key_mgmt=SAE
 
-ignore_broadcast_ssid=0
-
-##BSSIDS
-bssid=XXXXXX
+## Note:
+## You can modify this file as needed to change the behavior of the AP.

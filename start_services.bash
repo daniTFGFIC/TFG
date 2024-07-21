@@ -6,15 +6,17 @@ then
     exit
 fi
 
+sed -i "s/^INTERFACESv4=\".*\"/INTERFACESv4=\"$1\"/" "/etc/default/isc-dhcp-server"
+
 systemctl restart hostapd
 systemctl restart isc-dhcp-server
 
-## Asignamos unha ip a wlx002719b8dec1 pois hostapd non configura nada diso (por eso usamos un servidor dhcp)
+## An IP address is assigned to the interface because hostapd does not configure it (that is why we use a DHCP server).
 ip address add 192.168.101.1/24 dev $1
 
 ## NAT
-# Todo o que sala de wlp0s20f3 faremos un cambio de IP
+# Everything that exits the interface will have an IP change.
 sudo iptables -t nat -A POSTROUTING -o $2 -j MASQUERADE
 
-# Todo o que entre por wlx002719b8dec1 con dirección 192.168.10.1/24 enviarémolo por wlp0s20f3
+# Everything that enters through the interface with address 192.168.10.1/24 will be sent through the interface connected to the internet.
 sudo iptables -A FORWARD -i $1 -o $2 -j ACCEPT
