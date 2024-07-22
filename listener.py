@@ -4,12 +4,15 @@ from multiprocessing import Process
 
 caps = pd.get_capabilities_information()
 dot_rates = pd.get_supported_rates()
+dot_ext_rates = pd.get_extended_supported_rates()
 dot_channel = pd.get_channel()
 dot_erp = pd.get_erp_info()
 dot_rsn = pd.get_rsn_info()
+dot_ht_cap = pd.get_ht_capabilities()
+dot_ft_inf = pd.get_ht_information()
 
 def send_response(packet, interface):
-    sendp(packet, iface=interface, count=5, inter=0.1, verbose=False)
+    sendp(packet, iface=interface, count=2, inter=0.1, verbose=False)
 
 def handle_packet(packet, shared_data, interface):
     ssids = shared_data['ssids']
@@ -25,7 +28,7 @@ def handle_packet(packet, shared_data, interface):
 
             dot11 = Dot11(type=0, subtype=5, addr1=client_mac, addr2=mac, addr3=mac)
             beacon = Dot11ProbeResp(cap=caps)
-            frame = RadioTap()/dot11/beacon/dot_ssid/dot_rates/dot_channel/dot_erp/dot_rsn
+            frame = RadioTap()/dot11/beacon/dot_ssid/dot_rates/dot_ext_rates/dot_channel/dot_erp/dot_rsn/dot_ht_cap/dot_ft_inf
 
             Process(target=send_response, args=(frame, interface)).start()
         else:

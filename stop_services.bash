@@ -13,5 +13,3 @@ iptables -t nat -D POSTROUTING -o $2 -j MASQUERADE
 iptables -D FORWARD -i $1 -o $2 -j ACCEPT
 
 ip address delete 192.168.101.1/24 dev $1
-
-ip link set $1 down

@@ -1,6 +1,6 @@
 *.log
 results.txt*
 *.save*
-
+*.swp
 __pycache__
 caps
