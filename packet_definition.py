@@ -1,4 +1,4 @@
-#### En este script se definirán los campos del paquete ####
+#### In this script the package fields are defined ####
 from scapy.all import Dot11Elt
 
 def get_ssid(ssid):
