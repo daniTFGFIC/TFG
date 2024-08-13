@@ -64,7 +64,7 @@ while true; do
             python3 main.py $interfaz "${SSIDs[@]}" "${BSSIDs[@]}"
 
             # Only unique entries are saved.
-            sort responses.log | uniq > results.txt
+            sort responses.log | uniq > results.txt 2>/dev/null
 
             # Disabling monitor mode
             ip link set $interfaz down

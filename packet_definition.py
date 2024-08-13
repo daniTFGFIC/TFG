@@ -57,4 +57,17 @@ def get_ht_information():
         b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  # Remaining bytes to make up 22 bytes in total
     )
     return Dot11Elt(ID='HT Operation', info=ht_info) #In scapy is called Operation but is HT Information
-#    return Dot11Elt(ID=61, info=ht_info)
+
+def get_ext_caps():
+    ext_cap = (
+        b"\x04"  # Octeto 1
+        b"\x00"  # Octeto 2
+        b"\x00"  # Octeto 3
+        b"\x00"  # Octeto 4
+        b"\x00"  # Octeto 5
+        b"\x00"  # Octeto 6
+        b"\x00"  # Octeto 7
+        b"\x40"  # Octeto 8
+    )
+    return Dot11Elt(ID='ExtendendCapatibilities', info=ext_cap)  # Extended Capabilities tiene ID 127
+

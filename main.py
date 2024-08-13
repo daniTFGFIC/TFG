@@ -21,7 +21,8 @@ def main():
     dot_erp = pd.get_erp_info()
     dot_rsn = pd.get_rsn_info()
     dot_ht_cap = pd.get_ht_capabilities()
-    dot_ft_inf = pd.get_ht_information()
+    dot_ht_inf = pd.get_ht_information()
+    dot_ext_caps = pd.get_ext_caps()
 
     with Manager() as manager:
         shared_data = manager.dict()
@@ -44,10 +45,10 @@ def main():
             dot_ssid = pd.get_ssid(ssid)
             dot11 = Dot11(type=0, subtype=8, addr1="ff:ff:ff:ff:ff:ff", addr2=mac, addr3=mac)
             beacon = Dot11Beacon(cap=caps)
-            frame = RadioTap()/dot11/beacon/dot_ssid/dot_rates/dot_ext_rates/dot_channel/dot_erp/dot_rsn/dot_ht_cap/dot_ft_inf
+            frame = RadioTap()/dot11/beacon/dot_ssid/dot_rates/dot_ext_rates/dot_channel/dot_erp/dot_rsn/dot_ht_cap/dot_ht_inf/dot_ext_caps
 
             sendp(frame, iface=interface, count=300, inter=0.1, verbose=False)
-            time.sleep(2)  # Waits before switching to the next SSID/MAC.
+            time.sleep(3)  # Waits before switching to the next SSID/MAC.
 
         stop_event.set()
         listen_process.join()

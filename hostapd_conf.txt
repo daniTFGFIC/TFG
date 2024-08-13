@@ -17,6 +17,7 @@ wpa_key_mgmt=WPA-PSK
 
 ##WPA3 configuration
 #wpa_key_mgmt=SAE
+#ieee80211w=2
 
 ## Note:
 ## You can modify this file as needed to change the behavior of the AP.
