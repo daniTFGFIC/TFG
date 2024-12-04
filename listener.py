@@ -20,7 +20,14 @@ def handle_packet(packet, shared_data, interface):
         client_mac = packet.addr2.lower()
         ap_mac = packet.addr1.lower()
 
-        if ap_mac == "ff:ff:ff:ff:ff:ff":
+        ssid_packet = packet.info.decode()
+        if ssid_packet in ssids:
+            print(f"SSID detectado: {ssid_packet}")
+            with open("responses.log", 'a') as file:
+                file.write(f"Packet: Probe Request -- From: {client_mac} -- To: {ap_mac} -- SSID: {ssid_packet}\n")
+
+        if ap_mac == "ff:ff:ff:ff:ff:ff" and ssid_packet =="":
+
             dot_ssid = pd.get_ssid(ssid)
 
             dot11 = Dot11(type=0, subtype=5, addr1=client_mac, addr2=mac, addr3=mac)
@@ -28,11 +35,12 @@ def handle_packet(packet, shared_data, interface):
             frame = RadioTap()/dot11/beacon/dot_ssid/dot_rates/dot_ext_rates/dot_channel/dot_erp/dot_rsn/dot_ht_cap/dot_ht_inf/dot_ext_caps
 
             sendp(packet, iface=interface, count=1, inter=0.1, verbose=False)
-        else:
-            ssid_packet = packet.info.decode()
-            if ssid_packet in ssids:
-                with open("responses.log", 'a') as file:
-                    file.write(f"Packet: Probe Request -- From: {client_mac} -- To: {ap_mac} -- SSID: {ssid_packet}\n")
+
+#        else:
+#            ssid_packet = packet.info.decode()
+#            if ssid_packet in ssids:
+#                with open("responses.log", 'a') as file:
+#                    file.write(f"Packet: Probe Request -- From: {client_mac} -- To: {ap_mac} -- SSID: {ssid_packet}\n")
 
     elif packet.haslayer(Dot11Auth) and packet[Dot11Auth].seqnum == 1: #client Authentication in response to the probe response.
         client_mac = packet.addr2.lower()

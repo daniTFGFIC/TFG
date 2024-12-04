@@ -2,7 +2,8 @@ import os
 import configparser
 
 
-wifis_path = '/etc/NetworkManager/system-connections/'
+#wifis_path = '/etc/NetworkManager/system-connections/'
+wifis_path = 'redes_comunes/'
 
 config = configparser.ConfigParser()
 
